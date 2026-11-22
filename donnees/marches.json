@@ -1,0 +1,107 @@
+{
+ "note": "Marchés habituels déduits du mail des fêtes 2025, à confirmer par Guillaume. day : 0 = dimanche … 6 = samedi. Les marchés exceptionnels ont des dates 2025 à remplacer.",
+ "habituels": [
+  {
+   "ville": "Marcigny",
+   "departement": "71",
+   "jour": 1,
+   "lieu": "Place du Cours",
+   "horaires": "8h-12h30",
+   "lon": 4.04,
+   "lat": 46.276
+  },
+  {
+   "ville": "Bourbon-l'Archambault",
+   "departement": "03",
+   "jour": 3,
+   "lieu": "Devant la mairie",
+   "horaires": "8h-12h30",
+   "lon": 3.056,
+   "lat": 46.583
+  },
+  {
+   "ville": "Cercy-la-Tour",
+   "departement": "58",
+   "jour": 4,
+   "lieu": "Place d'Aligre",
+   "horaires": "8h-12h30",
+   "lon": 3.646,
+   "lat": 46.868
+  },
+  {
+   "ville": "Decize",
+   "departement": "58",
+   "jour": 5,
+   "lieu": "Place du Champ de Foire",
+   "horaires": "8h-12h30",
+   "lon": 3.461,
+   "lat": 46.828
+  },
+  {
+   "ville": "Nevers",
+   "departement": "58",
+   "jour": 5,
+   "lieu": "Square de la Résistance",
+   "horaires": "15h-19h",
+   "lon": 3.159,
+   "lat": 46.99
+  },
+  {
+   "ville": "Nevers",
+   "departement": "58",
+   "jour": 6,
+   "lieu": "Rue Saint-Didier, entre l'Agricole et Les Copains d'Abord",
+   "horaires": "8h-13h",
+   "lon": 3.159,
+   "lat": 46.99
+  },
+  {
+   "ville": "Moulins",
+   "departement": "03",
+   "jour": 0,
+   "lieu": "Place de la Liberté",
+   "horaires": "8h-13h",
+   "lon": 3.333,
+   "lat": 46.566
+  }
+ ],
+ "exceptionnels": [
+  {
+   "date": "2025-12-12",
+   "ville": "Dompierre-sur-Besbre",
+   "lieu": "Marché de Noël, salle Laurent Grillet",
+   "horaires": "18h-21h",
+   "note": "After avec les commerçants de Dompierre Commerce"
+  },
+  {
+   "date": "2025-12-13",
+   "ville": "Dompierre-sur-Besbre",
+   "lieu": "Marché de Noël, salle Laurent Grillet",
+   "horaires": "9h-19h"
+  },
+  {
+   "date": "2025-12-14",
+   "ville": "Dompierre-sur-Besbre",
+   "lieu": "Marché de Noël, salle Laurent Grillet",
+   "horaires": "10h-18h"
+  },
+  {
+   "date": "2025-12-23",
+   "ville": "Nevers",
+   "lieu": "Square de la Résistance",
+   "horaires": "15h-19h"
+  },
+  {
+   "date": "2025-12-24",
+   "ville": "Moulins",
+   "lieu": "Place de la Liberté",
+   "horaires": "8h-12h30"
+  }
+ ],
+ "base": {
+  "ville": "Dompierre-sur-Besbre",
+  "adresse": "Lieu-dit Le Cros, 03290 Dompierre-sur-Besbre",
+  "lon": 3.68,
+  "lat": 46.517
+ }
+}

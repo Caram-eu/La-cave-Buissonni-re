@@ -1,0 +1,119 @@
+// Schéma de la base de données de La Cave Buissonnière.
+// Les montants sont stockés en centimes (entiers) pour éviter les erreurs d'arrondi.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductKind {
+  PRODUIT       // vin, bière, jus, eau, coffret : se commande en ligne
+  ACCESSOIRE    // éthylotest, articles de cave
+  CARTE_CADEAU  // présentée sur le site, vendue uniquement sur les marchés
+}
+
+enum ProductTag {
+  NOUVEAUTE
+  BEST_SELLER
+}
+
+model Product {
+  id              String       @id @default(cuid())
+  slug            String       @unique
+  kind            ProductKind  @default(PRODUIT)
+  name            String
+  category        String       // rouge, blanc, bulles, doux, liqueur, biere, sansalcool, coffret, accessoire
+  color           String       // couleur des hachures du dessin (rouge, blanc, rose, ipa...)
+  domain          String
+  label           String       @default("") // Bio, Biodynamie...
+  region          String
+  appellation     String       @default("")
+  grapes          String       @default("")
+  vintage         String       @default("") // "2023" ou "NM" (non millésimé)
+  volumeCl        Int          @default(0)
+  priceCents      Int
+  noAddedSulfites Boolean      @default(false)
+  sugar           String?      // sucres résiduels, ex. "20 g"
+  style           String?      // ex. "IPA", "Blanche"
+  isBeer          Boolean      @default(false)
+  bottleLabel     String?      // texte de l'étiquette dessinée
+  boxKind         String?      // coffret : "biere"...
+  tag             ProductTag?
+  discountEligible Boolean     @default(true) // remise "6 bouteilles" applicable
+  available       Boolean      @default(true) // disponible / indisponible
+  hidden          Boolean      @default(false) // masqué du site
+  photoUrl        String?
+  sortOrder       Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([hidden, sortOrder])
+}
+
+// Marché habituel : chaque semaine, le même jour.
+model Market {
+  id         String   @id @default(cuid())
+  town       String
+  department String
+  weekday    Int      // 0 = dimanche ... 6 = samedi
+  place      String
+  hours      String   // ex. "8h-12h30"
+  lon        Float
+  lat        Float
+  active     Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  exceptions MarketException[]
+}
+
+enum ExceptionKind {
+  EXCEPTIONNEL // marché ponctuel (Noël, fête...)
+  ANNULE       // un marché habituel n'a pas lieu ce jour-là (congés, météo)
+}
+
+model MarketException {
+  id       String        @id @default(cuid())
+  kind     ExceptionKind
+  date     String        // AAAA-MM-JJ, jour calendaire à Paris
+  town     String
+  place    String        @default("")
+  hours    String        @default("")
+  note     String?
+  lon      Float?
+  lat      Float?
+  marketId String?       // pour ANNULE : le marché habituel concerné
+  market   Market?       @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@index([date])
+}
+
+// Réglages modifiables dans l'administration (rayon, remise, heure limite, textes...).
+model Setting {
+  key   String @id
+  value Json
+}
+
+model Quote {
+  id        String   @id @default(cuid())
+  type      String
+  date      String?
+  guests    Int?
+  place     String?
+  budget    String?
+  message   String   @default("")
+  name      String
+  phone     String?
+  email     String?
+  status    String   @default("nouvelle")
+  createdAt DateTime @default(now())
+}
+
+// Limitation du nombre de tentatives (connexions, formulaires).
+model RateLimit {
+  key       String   @id
+  count     Int
+  resetAt   DateTime
+}
