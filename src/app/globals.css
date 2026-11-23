@@ -361,3 +361,44 @@ footer .legal{border-top:1px solid rgba(255,255,255,.18);margin-top:26px;padding
 @media(max-width:560px){.tk-label{font-size:0;padding-left:12px;padding-right:20px}.tk-label::before{content:"Marchés";font-size:15px}}
 /* animations réduites : pas de défilement automatique, on fait glisser à la main */
 @media(prefers-reduced-motion:reduce){.tk-viewport{overflow-x:auto;mask-image:none}.tk-track{animation:none}.tk-track>.tk-list[aria-hidden]{display:none}.tk-btn{display:none}}
+
+/* ---------- administration (utilisable sur téléphone) ---------- */
+.adm{max-width:1100px;margin:0 auto;padding:16px max(4vw,12px) 48px}
+.adm h1{font-size:clamp(28px,4vw,38px);margin:4px 0 14px}
+.adm h2{font-size:24px;margin:0 0 10px}
+.admnav{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;margin-bottom:8px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.admnav a{flex:none;text-decoration:none;font-weight:700;font-size:15px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);min-height:40px;display:flex;align-items:center;gap:6px}
+.admnav a.on{background:var(--slate);border-color:var(--slate);color:var(--onSlate)}
+.admnav .cnt{background:var(--wine);color:#fff;border-radius:999px;font-size:12px;padding:0 7px;min-width:20px;text-align:center}
+.cards{display:grid;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.card a.stretch{text-decoration:none}
+.card .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.st{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--soft)}
+.st.NOUVELLE{background:#7a1f3d;color:#fff}.st.CONFIRMEE{background:#e3efc6;color:#3f5a05}.st.PREPAREE{background:#fff1b8;color:#5c4400}.st.REMISE{background:#2d3e46;color:#fff}.st.ANNULEE{background:#eee;color:#666;text-decoration:line-through}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.filters .f{margin:0}
+.filters label{font-size:13px;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin-bottom:18px}
+.kpis a{display:block;text-decoration:none;background:var(--soft);border-radius:16px;padding:14px 16px}
+.kpis b{display:block;font-family:Kalam;font-size:36px;line-height:1;color:var(--greenInk)}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th{text-align:left;font-size:13px;color:var(--mute);border-bottom:2px solid var(--line);padding:6px 8px 6px 0}
+.tbl td{border-bottom:1px solid var(--line);padding:8px 8px 8px 0;vertical-align:top}
+.tbl td.n{text-align:right;white-space:nowrap;font-weight:700}
+.btn.sm{min-height:38px;padding:4px 14px;font-size:14px}
+.btn.danger{background:#b3261e;border-color:#b3261e;color:#fff}
+.inline{display:inline}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media(max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}.tbl.resp thead{display:none}.tbl.resp tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}.tbl.resp td{display:block;border:0;padding:2px 0}.tbl.resp td.n{text-align:left}}
+.todo-list li{margin:4px 0}
+.okmsg{color:#3f5a05;font-weight:700}
+.muted-row{opacity:.55}
+.thumb{width:44px;height:60px;display:grid;place-items:center;background:var(--soft);border-radius:8px;flex:none}
+.thumb svg,.thumb img{max-height:54px;width:auto}
+/* fiche de préparation imprimable */
+@media print{
+  header,footer,.ticker,.backbar,.admnav,.noprint,.ck,#toast{display:none!important}
+  body{font-size:12pt}.adm{padding:0;max-width:none}.card{border:1px solid #999;break-inside:avoid}
+  .tbl td,.tbl th{padding:4px 6px 4px 0}
+}

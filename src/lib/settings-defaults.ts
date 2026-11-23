@@ -16,9 +16,54 @@ export const DEFAULT_SETTINGS = {
     facebook: "https://www.facebook.com/lacavebuissonniere/",
   },
   bannerText: "",
+  /** Informations légales : un champ vide apparaît dans « À compléter avant mise en ligne » (admin), jamais aux visiteurs. */
+  legal: {
+    siret: "832 692 230 00010",
+    rcs: "RCS Cusset 832 692 230",
+    vat: "FR06 832 692 230",
+    kbisChecked: false,
+    licenceNumber: "",
+    licenceTown: "",
+    hostName: "",
+    hostAddress: "",
+    hostPhone: "",
+    mediatorName: "",
+    mediatorAddress: "",
+    mediatorWebsite: "",
+    giftCardValidity: "",
+    emailProvider: "",
+    dataLocation: "",
+  },
 };
 
 export type Settings = typeof DEFAULT_SETTINGS;
+
+export const LEGAL_LABELS: Record<keyof Settings["legal"], string> = {
+  siret: "SIRET",
+  rcs: "Immatriculation RCS",
+  vat: "Numéro de TVA intracommunautaire",
+  kbisChecked: "SIRET, RCS et TVA vérifiés sur le Kbis",
+  licenceNumber: "Numéro de la petite licence à emporter",
+  licenceTown: "Commune de délivrance de la licence",
+  hostName: "Nom ou raison sociale de l'hébergeur",
+  hostAddress: "Adresse de l'hébergeur",
+  hostPhone: "Téléphone de l'hébergeur",
+  mediatorName: "Nom du médiateur de la consommation",
+  mediatorAddress: "Adresse postale du médiateur",
+  mediatorWebsite: "Site internet du médiateur",
+  giftCardValidity: "Durée de validité de la carte cadeau (ex. 1 an)",
+  emailProvider: "Service d'envoi d'e-mails (ex. Brevo, Paris)",
+  dataLocation: "Lieu de stockage des données (ex. Union européenne, Francfort)",
+};
+
+/** Mentions légales encore à compléter (affichées dans l'administration seulement). */
+export function legalTodo(s: Settings): string[] {
+  const out = (Object.keys(LEGAL_LABELS) as (keyof Settings["legal"])[])
+    .filter((k) => (k === "kbisChecked" ? !s.legal.kbisChecked : !String(s.legal[k]).trim()))
+    .map((k) => LEGAL_LABELS[k]);
+  if (s.onlinePayment.enabled) out.push("Nommer le prestataire de paiement en ligne dans la politique de confidentialité");
+  return out;
+}
 export type SettingKey = keyof Settings;
 
 /** Catégories auxquelles la remise « 6 bouteilles » ne s'applique pas. */

@@ -28,7 +28,7 @@ const Signup = z
 
 export async function signup(_: FormState, form: FormData): Promise<FormState> {
   const ip = await clientIp();
-  if (!(await rateLimit(`inscription:${ip}`, 10, 3600))) return { error: "Trop de tentatives. Réessayez dans une heure." };
+  if (!(await rateLimit(`inscription:${ip}`, 20, 3600))) return { error: "Trop de tentatives. Réessayez dans une heure." };
   const p = Signup.safeParse(Object.fromEntries(form));
   if (!p.success) return { error: p.error.issues[0]?.message };
   const d = p.data;

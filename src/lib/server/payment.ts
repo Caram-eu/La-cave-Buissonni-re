@@ -13,3 +13,8 @@ export type PaymentRequest = { orderId: string; number: string; amountCents: num
 export async function createPayment(_req: PaymentRequest): Promise<{ redirectUrl: string }> {
   throw new Error("Paiement en ligne non configuré");
 }
+
+/** Les clés du prestataire de paiement sont-elles installées sur le serveur ? */
+export function paymentConfigured(): boolean {
+  return !!(process.env.SUMUP_API_KEY && process.env.SUMUP_MERCHANT_CODE);
+}

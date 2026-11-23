@@ -22,7 +22,7 @@ export default async function ComptePage({ searchParams }: { searchParams: Promi
     return (
       <section><div className="band"><div className="formwrap">
         {sp.supprime && <div className="okbox" role="status">Votre compte a été supprimé. Les pièces comptables des commandes passées restent conservées 10 ans, comme la loi l&apos;impose.</div>}
-        <AuthForms towns={towns} next={fromCart ? "/panier?etape=2" : "/compte"} fromCart={fromCart} />
+        <AuthForms towns={towns} next={fromCart ? "/panier?etape=2" : sp.suite === "admin" ? "/admin" : "/compte"} fromCart={fromCart} />
       </div></div></section>
     );
   }
@@ -31,6 +31,7 @@ export default async function ComptePage({ searchParams }: { searchParams: Promi
     <section><div className="band"><div className="formwrap">
       <h1>Bonjour {user.firstName} !</h1>
       <p className="muted" style={{ marginTop: 8 }}>Votre espace client La Cave Buissonnière.</p>
+      {user.isAdmin && <p style={{ marginTop: 12 }}><Link className="btn green" href="/admin">Accéder à l&apos;administration</Link></p>}
       {sp["nouveau-mdp"] && <div className="okbox" role="status" style={{ marginTop: 16 }}>Votre nouveau mot de passe est enregistré.</div>}
       <div className="panel" style={{ marginTop: 20 }}>
         <h2 style={{ fontSize: 24 }}>Mes informations</h2>

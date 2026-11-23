@@ -196,6 +196,7 @@ model Order {
   giftCardCents  Int           @default(0)
   totalCents     Int           // reste à payer, hors frais de livraison ou d'expédition
   shippingNote   String?       // frais convenus par téléphone
+  adminNote      String?       // note interne de Guillaume
   paymentMethod  PaymentMethod @default(A_LA_REMISE)
   paymentStatus  String        @default("a_payer") // a_payer, paye, rembourse
   cgvVersion     String
@@ -269,4 +270,12 @@ model PasswordReset {
   createdAt DateTime  @default(now())
 
   @@index([userId])
+}
+
+// Photo de bouteille envoyée depuis l'administration (servie par /photos/[id])
+model ProductPhoto {
+  id        String   @id @default(cuid())
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
 }

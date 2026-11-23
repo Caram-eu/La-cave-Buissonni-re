@@ -10,12 +10,20 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 1. Socle, site public et catalogue — FAIT, validé
 2. Panier et commande — FAIT, validé. Inclut le minimum des comptes
    (création avec case 18 ans, connexion, déconnexion), indispensable pour commander.
-3. Comptes — FAIT (en attente de validation) : mot de passe oublié (lien 1 h, usage unique), informations
+3. Comptes — FAIT, validé : mot de passe oublié (lien 1 h, usage unique), informations
    et marché habituel modifiables, changement de mot de passe, export JSON, suppression (mot de passe
    demandé, commandes conservées sans lien au compte), purge des comptes inactifs 3 ans (`purgeExpiredData`,
    à planifier chaque jour à l'étape 7). E-mails écrits dans `MAIL_OUTBOX_DIR` tant que Brevo n'est pas branché.
-4. Administration
-5. E-mails
+4. Administration — FAIT (en attente de validation) : `/admin` (réservé `User.isAdmin`, 404 sinon).
+   Accès donné par `npm run admin -- ajouter email` (Guillaume et Léo, après création de leur compte).
+   Commandes (filtres, statuts, notes, export CSV), fiche de préparation imprimable, produits (édition,
+   copie, masquage, dispo, pastilles, photo stockée en base `ProductPhoto` servie par `/photos/[id]`),
+   import/export de la carte CSV ou .xlsx (`src/lib/rules/catalog-import.ts`, colonne « Adresse » = slug),
+   marchés habituels et exceptionnels/annulés, devis, lettre d'information (export CSV pour Brevo),
+   cartes cadeaux (création + code + e-mail, déduction au marché), réglages (règles, contacts,
+   informations légales → liste « À compléter »).
+5. E-mails (Brevo) et paiement en ligne SumUp (codé « comme si », désactivé tant que les clés
+   SUMUP_API_KEY / SUMUP_MERCHANT_CODE ne sont pas installées ; Léo a un compte SumUp mais ne le branche pas encore)
 6. Pages légales et référencement (+ test Playwright de bout en bout)
 7. Déploiement et LISEZMOI.md
 
@@ -38,6 +46,8 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 - Bandeau vert défilant des prochains marchés en haut de toutes les pages (demande de Léo, 23 nov.) :
   `src/components/layout/MarketTicker.tsx`, 8 marchés sur 14 jours, marchés du jour terminés masqués,
   bouton pause obligatoire (WCAG 2.2.2), fixe si « animations réduites ».
+- Administration : Guillaume et Léo (23 nov. 2026). Limite d'inscriptions : 20 par heure et par IP
+  (IP souvent partagées : opérateurs mobiles, Wi-Fi de salle des fêtes).
 - Les évolutions futures passeront par Léo, via des sessions Claude : tout doit rester dans ce dépôt.
 
 ## Technique
