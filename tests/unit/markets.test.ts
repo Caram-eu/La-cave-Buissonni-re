@@ -90,6 +90,14 @@ describe("heure limite de commande (19 h la veille, heure de Paris)", () => {
   });
 });
 
+describe("marchés du jour déjà terminés", () => {
+  it("sont retirés de l'affichage après leur heure de fin, heure de Paris", () => {
+    const mon = (utc: string) => upcomingMarkets(new Date(utc), MK, [], { limit: 1, hideFinished: true })[0].town;
+    expect(mon("2026-11-23T11:29:00Z")).toBe("Marcigny"); // lundi 12 h 29 : marché en cours
+    expect(mon("2026-11-23T11:30:00Z")).toBe("Decize"); // lundi 12 h 30 : terminé
+  });
+});
+
 describe("affichage des horaires", () => {
   it("met en forme comme la maquette", () => {
     expect(formatHours("8h-12h30")).toBe("8 h – 12 h 30");

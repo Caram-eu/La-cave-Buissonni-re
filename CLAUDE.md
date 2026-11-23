@@ -31,6 +31,9 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 - Compte obligatoire pour commander.
 - Téléphone obligatoire pour toute commande, y compris le retrait au marché (choix fait à l'étape 2,
   pour prévenir le client si un marché est annulé ; à confirmer par Léo).
+- Bandeau vert défilant des prochains marchés en haut de toutes les pages (demande de Léo, 23 nov.) :
+  `src/components/layout/MarketTicker.tsx`, 8 marchés sur 14 jours, marchés du jour terminés masqués,
+  bouton pause obligatoire (WCAG 2.2.2), fixe si « animations réduites ».
 - Les évolutions futures passeront par Léo, via des sessions Claude : tout doit rester dans ce dépôt.
 
 ## Technique

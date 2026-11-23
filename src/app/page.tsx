@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const [s, { weekly, exceptions }] = await Promise.all([getSettings(), loadMarkets()]);
   const now = new Date();
-  const upcoming = upcomingMarkets(now, weekly, exceptions, { days: 70 });
+  const upcoming = upcomingMarkets(now, weekly, exceptions, { days: 70, hideFinished: true });
   const specials = upcomingSpecials(now, exceptions).map((e) => ({ key: e.id!, date: e.date, town: e.town, place: e.place, hours: e.hours, note: e.note, special: true }));
 
   const pins: TownPin[] = [];
