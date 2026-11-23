@@ -135,6 +135,7 @@ model User {
   createdAt     DateTime  @default(now())
   sessions      Session[]
   orders        Order[]
+  resets        PasswordReset[]
 }
 
 model Session {
@@ -256,4 +257,16 @@ model GiftCardUse {
   amountCents Int
   status     GiftCardUseStatus @default(RESERVE)
   createdAt  DateTime          @default(now())
+}
+
+// Demande de réinitialisation du mot de passe (lien valable 1 heure, utilisable une fois)
+model PasswordReset {
+  id        String    @id // empreinte SHA-256 du jeton envoyé par e-mail
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }

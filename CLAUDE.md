@@ -8,9 +8,12 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 ## Méthode
 Étapes testables ; à la fin de chaque étape : tests, captures d'écran, puis attendre l'accord de Léo.
 1. Socle, site public et catalogue — FAIT, validé
-2. Panier et commande — FAIT (en attente de validation). Inclut le minimum des comptes
+2. Panier et commande — FAIT, validé. Inclut le minimum des comptes
    (création avec case 18 ans, connexion, déconnexion), indispensable pour commander.
-3. Comptes : mot de passe oublié, marché habituel modifiable, export et suppression des données
+3. Comptes — FAIT (en attente de validation) : mot de passe oublié (lien 1 h, usage unique), informations
+   et marché habituel modifiables, changement de mot de passe, export JSON, suppression (mot de passe
+   demandé, commandes conservées sans lien au compte), purge des comptes inactifs 3 ans (`purgeExpiredData`,
+   à planifier chaque jour à l'étape 7). E-mails écrits dans `MAIL_OUTBOX_DIR` tant que Brevo n'est pas branché.
 4. Administration
 5. E-mails
 6. Pages légales et référencement (+ test Playwright de bout en bout)
@@ -18,8 +21,9 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 
 ## Décisions de Léo (22 novembre 2026)
 - Domaine lacavebuissonniere.fr : décision reportée.
-- Paiement au retrait : espèces et carte bancaire, **pas de chèque** pour l'instant.
-- Paiement en ligne : à rendre disponible (prestataire à choisir : Stripe ou SumUp).
+- Date de mise en ligne : aucune pour l'instant, peut-être en 2027 (23 nov. 2026).
+- Paiement au retrait : espèces et carte bancaire, **pas de chèque** (confirmé le 23 nov. 2026).
+- Paiement en ligne : **SumUp** (choix de Léo, 23 nov. 2026), à brancher dans `src/lib/server/payment.ts`.
 - Hébergeur, budget, médiateur, licence : inconnus pour l'instant (mentions « à compléter »).
 - Marchés 2026 et nouvelle carte 2026 : Léo les fournira ; la carte sera importée plus tard.
 - Stock : seulement disponible / indisponible (champ `Product.available`).
@@ -30,7 +34,7 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 - Carte cadeau : **pas d'achat en ligne**. Présentée sur le site, achetée sur les marchés.
 - Compte obligatoire pour commander.
 - Téléphone obligatoire pour toute commande, y compris le retrait au marché (choix fait à l'étape 2,
-  pour prévenir le client si un marché est annulé ; à confirmer par Léo).
+  pour prévenir le client si un marché est annulé ; confirmé par Léo le 23 nov. 2026).
 - Bandeau vert défilant des prochains marchés en haut de toutes les pages (demande de Léo, 23 nov.) :
   `src/components/layout/MarketTicker.tsx`, 8 marchés sur 14 jours, marchés du jour terminés masqués,
   bouton pause obligatoire (WCAG 2.2.2), fixe si « animations réduites ».

@@ -16,7 +16,7 @@ export default defineConfig({
           include: ["tests/integration/**/*.test.ts"],
           environment: "node",
           globalSetup: ["tests/integration/setup.ts"],
-          env: { DATABASE_URL: process.env.TEST_DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/cave_test" },
+          env: { DATABASE_URL: process.env.TEST_DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/cave_test", MAIL_OUTBOX_DIR: path.resolve(__dirname, "test-results/outbox-integration") },
         },
       },
     ],

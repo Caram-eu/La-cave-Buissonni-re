@@ -15,6 +15,6 @@ export default defineConfig({
     command: "npx next start -p 3100",
     url: "http://localhost:3100",
     reuseExistingServer: false,
-    env: { DATABASE_URL: TEST_DB, GEOCODE_URL: process.env.GEOCODE_URL || "" },
+    env: { DATABASE_URL: TEST_DB, GEOCODE_URL: process.env.GEOCODE_URL || "", SITE_URL: "http://localhost:3100", MAIL_OUTBOX_DIR: "test-results/outbox-e2e" },
   },
 });

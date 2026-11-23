@@ -44,6 +44,7 @@ export function AuthForms({ towns, next, fromCart }: { towns: string[]; next: st
           <input type="hidden" name="next" value={next} />
           <div className="f"><label htmlFor="lMail">Adresse e-mail</label><input className="field" id="lMail" name="email" type="email" autoComplete="email" required /></div>
           <div className="f"><label htmlFor="lPw">Mot de passe</label><input className="field" id="lPw" name="password" type="password" autoComplete="current-password" required /></div>
+          <p className="small" style={{ margin: "-10px 0 8px" }}><Link href="/compte/mot-de-passe-oublie" style={{ display: "inline-block", padding: "10px 0" }}>Mot de passe oublié ?</Link></p>
           <p className="err" role="alert">{lState.error}</p>
           <button className="btn green" type="submit" style={{ width: "100%" }} disabled={lPending}>{lPending ? "Connexion…" : "Se connecter"}</button>
         </form>
