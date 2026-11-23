@@ -9,7 +9,7 @@ type U = { firstName: string; lastName: string; email: string; phone: string | n
 export function ProfileForm({ u, towns }: { u: U; towns: string[] }) {
   const [st, action, pending] = useActionState<SaveState, FormData>(updateProfile, {});
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate style={{ marginTop: 12 }}>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate style={{ marginTop: 12 }}>
       <div className="two">
         <div className="f"><label htmlFor="pFirst">Prénom</label><input className="field" id="pFirst" name="firstName" defaultValue={u.firstName} autoComplete="given-name" /></div>
         <div className="f"><label htmlFor="pLast">Nom</label><input className="field" id="pLast" name="lastName" defaultValue={u.lastName} autoComplete="family-name" /></div>
@@ -34,7 +34,7 @@ export function ProfileForm({ u, towns }: { u: U; towns: string[] }) {
 export function PasswordForm() {
   const [st, action, pending] = useActionState<SaveState, FormData>(changePassword, {});
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate style={{ marginTop: 12 }}>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate style={{ marginTop: 12 }}>
       <div className="f"><label htmlFor="cpCur">Mot de passe actuel</label><input className="field" id="cpCur" name="current" type="password" autoComplete="current-password" /></div>
       <div className="two">
         <div className="f"><label htmlFor="cpNew">Nouveau mot de passe</label><input className="field" id="cpNew" name="password" type="password" autoComplete="new-password" minLength={8} /></div>
@@ -53,7 +53,7 @@ export function DeleteAccount() {
   if (!ask)
     return <button className="btn ghost" type="button" onClick={() => setAsk(true)}>Supprimer mon compte</button>;
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       <p style={{ marginBottom: 10 }}><b>Confirmer la suppression définitive ?</b> Indiquez votre mot de passe pour confirmer.</p>
       <div className="f"><label htmlFor="dPw">Mot de passe</label><input className="field" id="dPw" name="password" type="password" autoComplete="current-password" /></div>
       <p className="err" role="alert">{st.error}</p>

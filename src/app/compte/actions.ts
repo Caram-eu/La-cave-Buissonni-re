@@ -32,7 +32,14 @@ export async function signup(_: FormState, form: FormData): Promise<FormState> {
   const p = Signup.safeParse(Object.fromEntries(form));
   if (!p.success) return { error: p.error.issues[0]?.message };
   const d = p.data;
-  if (await db.user.findUnique({ where: { email: d.email } })) return { error: "Un compte existe déjà avec cette adresse. Connectez-vous." };
+  const existing = await db.user.findUnique({ where: { email: d.email } });
+  if (existing) {
+    // double appui ou client qui a oublié avoir un compte : le bon mot de passe suffit à le connecter
+    if (!(await verifyPassword(existing.passwordHash, d.password))) return { error: "Un compte existe déjà avec cette adresse. Connectez-vous." };
+    await db.user.update({ where: { id: existing.id }, data: { lastLoginAt: new Date() } });
+    await createSession(existing.id);
+    redirect(safeNext(form.get("next")));
+  }
   const user = await db.user.create({
     data: {
       email: d.email, passwordHash: await hashPassword(d.password), firstName: d.firstName, lastName: d.lastName, phone: d.phone,

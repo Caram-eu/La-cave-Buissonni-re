@@ -18,6 +18,7 @@ export default async function AdminHome() {
   const countOf = (d: string, t: string) => counts.find((c) => c.marketDate === d && c.marketTown === t)?._count ?? 0;
   const deliveries = await db.order.count({ where: { mode: { in: ["LIVRAISON", "EXPEDITION"] }, status: { in: ["NOUVELLE", "CONFIRMEE", "PREPAREE"] } } });
   const todo = legalTodo(s);
+  const failedMails = await db.emailLog.findMany({ where: { status: "echec", createdAt: { gte: new Date(now.getTime() - 7 * 864e5) } }, orderBy: { createdAt: "desc" }, take: 10 });
   const pastSpecials = exceptions.filter((e) => e.date < today).length;
   const open = orderableMarkets(now, weekly, exceptions, s.cutoffHour, { limit: 1 })[0];
   return (
@@ -29,6 +30,15 @@ export default async function AdminHome() {
         <Link href="/admin/devis"><b>{newQuotes}</b>demande{newQuotes > 1 ? "s" : ""} de devis à traiter</Link>
         <Link href="/admin/produits?dispo=non"><b>{unavailable}</b>produit{unavailable > 1 ? "s" : ""} indisponible{unavailable > 1 ? "s" : ""}</Link>
       </div>
+      {failedMails.length > 0 && (
+        <div className="card" style={{ borderColor: "#b3261e", marginBottom: 14 }} role="alert">
+          <h2>E-mails non partis ({failedMails.length} sur 7 jours)</h2>
+          <p className="small muted" style={{ marginBottom: 6 }}>Ces clients n&apos;ont pas reçu leur e-mail : prévenez-les par téléphone si besoin. Cause probable : service d&apos;e-mails mal configuré.</p>
+          <ul className="small">{failedMails.map((m) => (
+            <li key={m.id}>{m.createdAt.toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "short", timeStyle: "short" })} · {m.subject} · {m.to}{m.orderId ? <> · <Link href={`/admin/commandes/${m.orderId}`}>commande</Link></> : null}</li>
+          ))}</ul>
+        </div>
+      )}
       <div className="grid2">
         <div className="card">
           <h2>Prochains marchés</h2>

@@ -2,7 +2,9 @@ import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import { db } from "./db";
 import { hashPassword } from "./auth";
+import { passwordResetEmail } from "../emails";
 import { sendMail } from "./mail";
+import { getSettings } from "./settings";
 
 const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
 const RESET_MINUTES = 60;
@@ -19,11 +21,8 @@ export async function requestPasswordReset(email: string, siteUrl: string, now =
   await db.passwordReset.deleteMany({ where: { userId: user.id, usedAt: null } }); // un seul lien valable à la fois
   await db.passwordReset.create({ data: { id: sha256(token), userId: user.id, expiresAt: new Date(now.getTime() + RESET_MINUTES * 60000) } });
   const link = `${siteUrl.replace(/\/$/, "")}/compte/nouveau-mot-de-passe?jeton=${token}`;
-  await sendMail({
-    to: user.email,
-    subject: "Réinitialisation de votre mot de passe, La Cave Buissonnière",
-    text: `Bonjour ${user.firstName},\n\nPour choisir un nouveau mot de passe, ouvrez ce lien (valable 1 heure, utilisable une seule fois) :\n${link}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre mot de passe reste inchangé.\n\nGuillaume, La Cave Buissonnière`,
-  });
+  const s = await getSettings();
+  await sendMail({ to: user.email, toName: user.firstName, ...passwordResetEmail({ firstName: user.firstName, link }, { site: siteUrl.replace(/\/$/, ""), contact: s.contact }), kind: "mot-de-passe" });
 }
 
 export type ResetCheck = { ok: true; userId: string } | { ok: false; error: string };

@@ -7,7 +7,7 @@ import { keepFormSubmit } from "@/lib/use-keep-form";
 export function OrderNotes({ id, shippingNote, adminNote, showShipping }: { id: string; shippingNote: string; adminNote: string; showShipping: boolean }) {
   const [st, action, pending] = useActionState<AdminState, FormData>(saveOrderNotes, {});
   return (
-    <form onSubmit={keepFormSubmit(action)}>
+    <form action={action} onSubmit={keepFormSubmit(action)}>
       <input type="hidden" name="id" value={id} />
       {showShipping ? (
         <div className="f"><label htmlFor="sn">Frais et jour convenus avec le client</label><input className="field" id="sn" name="shippingNote" defaultValue={shippingNote} placeholder="ex. 8 € de livraison, mardi 2 décembre vers 18 h" /></div>

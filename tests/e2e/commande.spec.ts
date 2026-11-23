@@ -1,3 +1,5 @@
+import { readdir, readFile } from "node:fs/promises";
+import path from "node:path";
 import { expect, test } from "@playwright/test";
 
 test.describe.configure({ mode: "serial" });
@@ -48,7 +50,20 @@ test("création de compte, panier, commande avec retrait et livraison hors zone 
   await expect(page.getByRole("status").filter({ hasText: "LCB-" })).toContainText("85,50");
   await expect(page.locator(".badge")).toHaveText("");
 
-  // 6. La commande apparaît dans le compte
+  // 6. E-mail de confirmation au client (dossier local des tests)
+  const number = /LCB-\d{6}-[A-Z0-9]{4}/.exec((await page.getByRole("status").filter({ hasText: "LCB-" }).textContent())!)![0];
+  let mail = "";
+  for (let i = 0; i < 20 && !mail; i++) {
+    for (const f of await readdir("test-results/outbox-e2e").catch(() => [] as string[])) {
+      const t = await readFile(path.join("test-results/outbox-e2e", f), "utf8");
+      if (f.endsWith(".txt") && t.includes(`À : ${email}`) && t.includes(number)) mail = t;
+    }
+    if (!mail) await page.waitForTimeout(250);
+  }
+  expect(mail).toContain("Retrait au marché");
+  expect(mail).toContain("85,50");
+
+  // 7. La commande apparaît dans le compte
   await page.getByRole("link", { name: "Voir mes commandes" }).click();
   await expect(page.locator("main")).toContainText("Retrait au marché");
 });

@@ -198,7 +198,8 @@ model Order {
   shippingNote   String?       // frais convenus par téléphone
   adminNote      String?       // note interne de Guillaume
   paymentMethod  PaymentMethod @default(A_LA_REMISE)
-  paymentStatus  String        @default("a_payer") // a_payer, paye, rembourse
+  paymentStatus  String        @default("a_payer") // a_payer, en_attente (paiement en ligne commencé), paye, rembourse
+  paymentRef     String?       // identifiant du paiement chez SumUp
   cgvVersion     String
   cgvAcceptedAt  DateTime
   reminderSentAt DateTime?
@@ -278,4 +279,19 @@ model ProductPhoto {
   mime      String
   data      Bytes
   createdAt DateTime @default(now())
+}
+
+// Journal des e-mails envoyés (sans leur contenu), conservé 12 mois
+model EmailLog {
+  id         String   @id @default(cuid())
+  kind       String   // confirmation, alerte-commande, rappel, carte-cadeau, mot-de-passe, alerte-devis
+  to         String
+  subject    String
+  status     String   // envoye, echec, dossier-local
+  error      String?
+  providerId String?
+  orderId    String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
 }

@@ -18,7 +18,7 @@ function Msg({ st }: { st: AdminState }) {
 export function SettingsForm({ group, children, submit = "Enregistrer" }: { group: string; children: React.ReactNode; submit?: string }) {
   const [st, action, pending] = useActionState<AdminState, FormData>(saveSettings, {});
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       <input type="hidden" name="group" value={group} />
       {children}
       <Msg st={st} />
@@ -35,7 +35,7 @@ export function MarketForm({ m, compact }: { m?: M; compact?: boolean }) {
   if (!open) return <button className="btn sm ghost" type="button" onClick={() => setOpen(true)}>Modifier</button>;
   const id = m?.id ?? "new";
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate style={{ marginTop: 8 }}>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate style={{ marginTop: 8 }}>
       {m?.id && <input type="hidden" name="id" value={m.id} />}
       <div className="grid2">
         <div className="f"><label htmlFor={`t-${id}`}>Ville</label><input className="field" id={`t-${id}`} name="town" defaultValue={m?.town} /></div>
@@ -57,7 +57,7 @@ export function ExceptionForm({ markets }: { markets: { id: string; label: strin
   const [st, action, pending] = useActionState<AdminState, FormData>(addException, {});
   const [kind, setKind] = useState<"EXCEPTIONNEL" | "ANNULE">("EXCEPTIONNEL");
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       <div className="seg" style={{ margin: "4px 0 14px" }}>
         <button type="button" className={kind === "EXCEPTIONNEL" ? "on" : ""} aria-pressed={kind === "EXCEPTIONNEL"} onClick={() => setKind("EXCEPTIONNEL")}>Marché exceptionnel</button>
         <button type="button" className={kind === "ANNULE" ? "on" : ""} aria-pressed={kind === "ANNULE"} onClick={() => setKind("ANNULE")}>Marché annulé</button>
@@ -86,7 +86,7 @@ export function ExceptionForm({ markets }: { markets: { id: string; label: strin
 export function GiftCardCreate({ amounts }: { amounts: number[] }) {
   const [st, action, pending] = useActionState<AdminState & { code?: string }, FormData>(createGiftCard, {});
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       <div className="grid2">
         <div className="f"><label htmlFor="ga">Montant (€)</label><input className="field" id="ga" name="amount" list="gamounts" inputMode="decimal" defaultValue={amounts[1] ?? 30} /><datalist id="gamounts">{amounts.map((a) => <option key={a} value={a} />)}</datalist></div>
         <div className="f"><label htmlFor="ge">Valable jusqu&apos;au (facultatif)</label><input className="field" id="ge" name="expiresAt" type="date" /></div>
@@ -106,7 +106,7 @@ export function GiftCardCreate({ amounts }: { amounts: number[] }) {
 export function GiftUse({ id }: { id: string }) {
   const [st, action, pending] = useActionState<AdminState, FormData>(applyGiftCardAtMarket, {});
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate className="row" style={{ gap: 6, alignItems: "flex-end" }}>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate className="row" style={{ gap: 6, alignItems: "flex-end" }}>
       <input type="hidden" name="id" value={id} />
       <div className="f" style={{ margin: 0 }}><label htmlFor={`u-${id}`} className="small">Utilisé au marché (€)</label><input className="field" id={`u-${id}`} name="amount" inputMode="decimal" style={{ width: 110 }} /></div>
       <button className="btn sm ghost" type="submit" disabled={pending}>Déduire</button>

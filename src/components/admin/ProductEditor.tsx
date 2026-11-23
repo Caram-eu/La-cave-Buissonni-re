@@ -17,7 +17,7 @@ export function ProductEditor({ p, regions }: { p: EditableProduct; regions: str
     <div className="f"><label htmlFor={`e-${k}`}>{label}</label><input className="field" id={`e-${k}`} name={k} defaultValue={String(p[k] ?? "")} {...extra} /></div>
   );
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       {p.id && <input type="hidden" name="id" value={p.id} />}
       <div className="grid2">{t("name", "Cuvée")}{t("domain", "Domaine")}</div>
       <div className="grid2">

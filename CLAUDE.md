@@ -14,7 +14,7 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
    et marché habituel modifiables, changement de mot de passe, export JSON, suppression (mot de passe
    demandé, commandes conservées sans lien au compte), purge des comptes inactifs 3 ans (`purgeExpiredData`,
    à planifier chaque jour à l'étape 7). E-mails écrits dans `MAIL_OUTBOX_DIR` tant que Brevo n'est pas branché.
-4. Administration — FAIT (en attente de validation) : `/admin` (réservé `User.isAdmin`, 404 sinon).
+4. Administration — FAIT, validé : `/admin` (réservé `User.isAdmin`, 404 sinon).
    Accès donné par `npm run admin -- ajouter email` (Guillaume et Léo, après création de leur compte).
    Commandes (filtres, statuts, notes, export CSV), fiche de préparation imprimable, produits (édition,
    copie, masquage, dispo, pastilles, photo stockée en base `ProductPhoto` servie par `/photos/[id]`),
@@ -22,8 +22,12 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
    marchés habituels et exceptionnels/annulés, devis, lettre d'information (export CSV pour Brevo),
    cartes cadeaux (création + code + e-mail, déduction au marché), réglages (règles, contacts,
    informations légales → liste « À compléter »).
-5. E-mails (Brevo) et paiement en ligne SumUp (codé « comme si », désactivé tant que les clés
-   SUMUP_API_KEY / SUMUP_MERCHANT_CODE ne sont pas installées ; Léo a un compte SumUp mais ne le branche pas encore)
+5. E-mails et paiement — FAIT (en attente de validation). Expéditeur contact@lacavebuissonniere.fr (choix de Léo).
+   `src/lib/emails.ts` (modèles), `src/lib/server/mail.ts` (Brevo, journal `EmailLog` sans contenu, 1 nouvelle
+   tentative, jamais bloquant), `src/lib/server/notify.ts` (confirmation + alerte, devis, rappels la veille,
+   `dailyTasks`), route `/api/taches/quotidiennes` (Bearer CRON_SECRET, à planifier chaque soir après 19 h).
+   SumUp codé « comme si » (`src/lib/server/payment.ts`), testé avec un faux service : désactivé tant que
+   SUMUP_API_KEY / SUMUP_MERCHANT_CODE ne sont pas installées. Brevo testé avec un faux service (pas de compte).
 6. Pages légales et référencement (+ test Playwright de bout en bout)
 7. Déploiement et LISEZMOI.md
 
@@ -67,7 +71,8 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
   débité à la remise, rendu si la commande est annulée (`GiftCardUse.status`).
 - Paiement en ligne : emplacement `src/lib/server/payment.ts`, désactivé (`onlinePayment.enabled`).
 - Sessions : cookie `lcb_me` httpOnly, seul le hash SHA-256 du jeton est en base ; mots de passe argon2id.
-- Formulaires avec action serveur : utiliser `keepFormSubmit` (sinon React 19 vide les champs après une erreur).
+- Formulaires avec action serveur : `action={x} onSubmit={keepFormSubmit(x)}` (React 19 vide sinon les champs
+  après une erreur ; l'attribut `action` évite un envoi GET avec les champs dans l'URL avant le chargement du JS).
 
 ## Commandes
 - `npm run dev` : site local sur http://localhost:3000

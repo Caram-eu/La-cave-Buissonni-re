@@ -19,7 +19,7 @@ export function AuthForms({ towns, next, fromCart }: { towns: string[]; next: st
         <button type="button" role="tab" className={tab === "connexion" ? "on" : ""} aria-selected={tab === "connexion"} onClick={() => setTab("connexion")}>Se connecter</button>
       </div>
       {tab === "creer" ? (
-        <form onSubmit={keepFormSubmit(sAction)} noValidate>
+        <form action={sAction} onSubmit={keepFormSubmit(sAction)} noValidate>
           <input type="hidden" name="next" value={next} />
           <div className="two">
             <div className="f"><label htmlFor="cFirst">Prénom</label><input className="field" id="cFirst" name="firstName" autoComplete="given-name" required /></div>
@@ -40,7 +40,7 @@ export function AuthForms({ towns, next, fromCart }: { towns: string[]; next: st
           <button className="btn green" type="submit" style={{ width: "100%" }} disabled={sPending}>{sPending ? "Création…" : "Créer mon compte"}</button>
         </form>
       ) : (
-        <form onSubmit={keepFormSubmit(lAction)} noValidate>
+        <form action={lAction} onSubmit={keepFormSubmit(lAction)} noValidate>
           <input type="hidden" name="next" value={next} />
           <div className="f"><label htmlFor="lMail">Adresse e-mail</label><input className="field" id="lMail" name="email" type="email" autoComplete="email" required /></div>
           <div className="f"><label htmlFor="lPw">Mot de passe</label><input className="field" id="lPw" name="password" type="password" autoComplete="current-password" required /></div>

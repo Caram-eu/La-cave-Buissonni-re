@@ -15,7 +15,9 @@ import { analyseImport, applyImport } from "@/lib/server/catalog-import";
 import { db } from "@/lib/server/db";
 import { sendMail } from "@/lib/server/mail";
 import { paymentConfigured } from "@/lib/server/payment";
-import { saveSetting } from "@/lib/server/settings";
+import { getSettings, saveSetting } from "@/lib/server/settings";
+import { siteUrl } from "@/lib/server/notify";
+import { giftCardEmail } from "@/lib/emails";
 import { resolveCommune } from "@/lib/server/zone";
 import { DEFAULT_SETTINGS } from "@/lib/settings-defaults";
 
@@ -298,18 +300,19 @@ export async function createGiftCard(_: AdminState & { code?: string }, form: Fo
   const d = p.data;
   let code = generateGiftCode((n) => randomBytes(n));
   while (await db.giftCard.findUnique({ where: { code } })) code = generateGiftCode((n) => randomBytes(n));
-  const amount = formatEuros(d.amount);
   const expires = d.expiresAt ? new Date(d.expiresAt + "T23:59:59+01:00") : null;
   await db.giftCard.create({ data: { code, initialCents: d.amount, balanceCents: d.amount, buyerName: d.buyerName || null, recipientEmail: d.recipientEmail || null, expiresAt: expires, note: d.note || null } });
+  let mailed = false;
   if (d.recipientEmail) {
-    await sendMail({
+    const st = await getSettings();
+    mailed = await sendMail({
       to: d.recipientEmail,
-      subject: "Votre carte cadeau La Cave Buissonnière",
-      text: `Bonjour,\n\n${d.buyerName ? d.buyerName + " vous offre" : "Vous avez reçu"} une carte cadeau La Cave Buissonnière de ${amount}.\n\nVotre code : ${code}\n${expires ? `Valable jusqu'au ${expires.toLocaleDateString("fr-FR", { timeZone: "Europe/Paris" })}.\n` : ""}\nChoisissez parmi les vins, les articles de cave et les prestations (dégustation à domicile, atelier…) : sur le site, saisissez le code au moment de commander, ou présentez-le sur un marché.\n\nÀ bientôt,\nGuillaume, La Cave Buissonnière`,
+      ...giftCardEmail({ code, amountCents: d.amount, buyerName: d.buyerName, expiresAt: expires }, { site: siteUrl(), contact: st.contact }),
+      kind: "carte-cadeau",
     });
   }
   revalidatePath("/admin/cartes-cadeaux");
-  return { ok: d.recipientEmail ? `Carte créée et envoyée à ${d.recipientEmail}.` : "Carte créée.", code };
+  return { ok: !d.recipientEmail ? "Carte créée." : mailed ? `Carte créée et envoyée à ${d.recipientEmail}.` : `Carte créée, mais l'e-mail à ${d.recipientEmail} n'a pas pu partir : donnez le code au client.`, code };
 }
 
 export async function setGiftCardDisabled(form: FormData) {

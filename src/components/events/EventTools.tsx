@@ -89,7 +89,7 @@ export function EventTools({ phone, email }: { phone: string; email: string }) {
               <div className="row" style={{ marginTop: 12 }}><Link className="btn green" href="/vins">Voir nos vins</Link></div>
             </div>
           ) : (
-            <form ref={formRef} onSubmit={keepFormSubmit(action)} noValidate>
+            <form ref={formRef} action={action} onSubmit={keepFormSubmit(action)} noValidate>
               <div className="f"><label htmlFor="qType">Type d&apos;événement</label>
                 <select className="field" id="qType" name="type" value={type} onChange={(e) => setType(e.target.value)}>{QUOTE_TYPES.map((t) => <option key={t}>{t}</option>)}</select></div>
               <div className="two">

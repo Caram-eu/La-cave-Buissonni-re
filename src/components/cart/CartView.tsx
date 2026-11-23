@@ -161,6 +161,7 @@ export function CartView({ s, initialStep, loggedIn }: { s: CartSettings; initia
               lines={lines}
               cart={cart}
               onBack={() => setStep(1)}
+              clearCart={clear}
               onDone={(d) => {
                 setDone({ ...d, total: d.total });
                 clear();
@@ -215,8 +216,9 @@ function ContactBox({ s, compact }: { s: CartSettings; compact?: boolean }) {
 }
 
 function CheckoutForm({
-  s, opts, lines, cart, onBack, onDone,
+  s, opts, lines, cart, onBack, onDone, clearCart,
 }: {
+  clearCart: () => void;
   s: CartSettings;
   opts: Opts | null;
   lines: React.ReactNode;
@@ -261,6 +263,12 @@ function CheckoutForm({
         mode === "MARCHE" ? { ...base, mode, marketKey } : mode === "LIVRAISON" ? { ...base, mode, city: zone.value, address } : { ...base, mode, shipAddress };
       const r = await submitOrder(body);
       if (!r.ok) return setErr(r.error);
+      if (r.redirectUrl) {
+        // paiement en ligne : direction la page sécurisée de SumUp
+        clearCart();
+        window.location.assign(r.redirectUrl);
+        return;
+      }
       const m = opts?.markets.find((x) => x.key === marketKey);
       const txt =
         mode === "MARCHE" && m
@@ -317,11 +325,11 @@ function CheckoutForm({
       <div className="f"><label htmlFor={id + "t"}>Téléphone pour vous joindre</label><input className="field" id={id + "t"} type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required /></div>
       <div className="f"><label htmlFor={id + "n"}>Un mot pour Guillaume (facultatif)</label><textarea className="field" id={id + "n"} rows={2} value={note} onChange={(e) => setNote(e.target.value)} /></div>
       <div className="f"><label htmlFor={id + "g"}>Code de carte cadeau (facultatif)</label><input className="field" id={id + "g"} placeholder="LCB-XXXX-XXXX" autoComplete="off" value={giftCode} onChange={(e) => setGiftCode(e.target.value)} /></div>
-      {s.onlinePayment && (
+      {s.onlinePayment && opts?.onlinePayment && (
         <fieldset style={{ border: 0, padding: 0, margin: "0 0 12px" }}>
           <legend style={{ fontWeight: 700, marginBottom: 6 }}>Paiement</legend>
           <label className="check"><input type="radio" name="pay" checked={payment === "A_LA_REMISE"} onChange={() => setPayment("A_LA_REMISE")} /> <span>Au retrait ou à la livraison ({s.paymentMethods})</span></label>
-          <label className="check"><input type="radio" name="pay" checked={payment === "EN_LIGNE"} onChange={() => setPayment("EN_LIGNE")} /> <span>En ligne, par carte bancaire</span></label>
+          <label className="check"><input type="radio" name="pay" checked={payment === "EN_LIGNE"} onChange={() => setPayment("EN_LIGNE")} /> <span>En ligne, par carte bancaire (page sécurisée SumUp){mode !== "MARCHE" ? " : frais de livraison ou d'expédition réglés à part" : ""}</span></label>
         </fieldset>
       )}
       <div className="ethylo">

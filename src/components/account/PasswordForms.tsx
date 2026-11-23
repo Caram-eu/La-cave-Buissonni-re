@@ -15,7 +15,7 @@ export function ForgotForm() {
       </div>
     );
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       <div className="f"><label htmlFor="fMail">Adresse e-mail de votre compte</label><input className="field" id="fMail" name="email" type="email" autoComplete="email" required /></div>
       <p className="err" role="alert">{st.error}</p>
       <button className="btn green" type="submit" style={{ width: "100%" }} disabled={pending}>Recevoir un lien par e-mail</button>
@@ -26,7 +26,7 @@ export function ForgotForm() {
 export function NewPasswordForm({ token }: { token: string }) {
   const [st, action, pending] = useActionState<SaveState, FormData>(setNewPassword, {});
   return (
-    <form onSubmit={keepFormSubmit(action)} noValidate>
+    <form action={action} onSubmit={keepFormSubmit(action)} noValidate>
       <input type="hidden" name="token" value={token} />
       <div className="f"><label htmlFor="nPw">Nouveau mot de passe</label><input className="field" id="nPw" name="password" type="password" autoComplete="new-password" minLength={8} required aria-describedby="nPwHelp" /><span className="small muted" id="nPwHelp">8 caractères minimum</span></div>
       <div className="f"><label htmlFor="nPw2">Confirmation</label><input className="field" id="nPw2" name="password2" type="password" autoComplete="new-password" required /></div>
