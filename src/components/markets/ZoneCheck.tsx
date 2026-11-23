@@ -10,6 +10,7 @@ export function zoneMessage(z: ZoneResult | null, radiusKm: number): { cls: stri
   if (!z) return { cls: "", text: "" };
   if (z.status === "inconnue")
     return { cls: "no", text: `Commune introuvable : elle est sans doute à plus de ${radiusKm} km de Dompierre. Choisissez-la dans la liste, ou optez pour l'expédition.` };
+  if (z.status === "ambigu") return { cls: "no", text: `Plusieurs communes portent ce nom : ${z.candidates.join(", ")}. Choisissez la vôtre dans la liste.` };
   if (z.status === "ok") return { cls: "ok", text: `Livrable : ${z.name} est à ${z.km} km de Dompierre.` };
   return { cls: "no", text: `Hors zone : ${z.name} est à ${z.km} km de Dompierre. La livraison se fait jusqu'à ${radiusKm} km : choisissez le retrait au marché ou l'expédition.` };
 }

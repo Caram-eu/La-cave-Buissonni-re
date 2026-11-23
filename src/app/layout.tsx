@@ -6,6 +6,7 @@ import { CookieNotice } from "@/components/layout/CookieNotice";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SvgDefs } from "@/components/SvgDefs";
+import { currentUser } from "@/lib/server/auth";
 import { getSettings } from "@/lib/server/settings";
 
 const SITE = process.env.SITE_URL || "http://localhost:3000";
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, colorScheme: "light", themeColor: "#ffffff" };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSettings();
+  const [settings, user] = await Promise.all([getSettings(), currentUser().catch(() => null)]);
   return (
     <html lang="fr">
       <body>
@@ -29,7 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SvgDefs />
         <CartProvider>
           {settings.bannerText ? <div className="banner">{settings.bannerText}</div> : null}
-          <Header />
+          <Header firstName={user?.firstName} />
           <main id="contenu">
             <BackBar />
             {children}
