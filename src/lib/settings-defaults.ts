@@ -33,6 +33,7 @@ export const DEFAULT_SETTINGS = {
     giftCardValidity: "",
     emailProvider: "",
     dataLocation: "",
+    warrantyText: "",
   },
 };
 
@@ -54,6 +55,7 @@ export const LEGAL_LABELS: Record<keyof Settings["legal"], string> = {
   giftCardValidity: "Durée de validité de la carte cadeau (ex. 1 an)",
   emailProvider: "Service d'envoi d'e-mails (ex. Brevo, Paris)",
   dataLocation: "Lieu de stockage des données (ex. Union européenne, Francfort)",
+  warrantyText: "Encadré officiel sur la garantie légale de conformité (article D. 211-2 du Code de la consommation, à copier depuis Légifrance)",
 };
 
 /** Mentions légales encore à compléter (affichées dans l'administration seulement). */

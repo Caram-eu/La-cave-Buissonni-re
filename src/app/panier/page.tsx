@@ -11,7 +11,8 @@ export default async function PanierPage({ searchParams }: { searchParams: Promi
   return (
     <section>
       <div className="band">
-        <div className="wrap">
+        {/* place réservée : le panier est lu dans le navigateur, sans elle le pied de page « saute » */}
+        <div className="wrap" style={{ minHeight: "70vh" }}>
           <CartView
             loggedIn={!!user}
             initialStep={sp.etape === "2" ? 2 : 1}

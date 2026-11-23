@@ -76,3 +76,17 @@ describe("statuts des commandes", () => {
     expect(giftCardEffect("NOUVELLE", "CONFIRMEE")).toBeNull();
   });
 });
+
+import { cgvVersion } from "@/lib/legal";
+import { DEFAULT_SETTINGS as D } from "@/lib/settings-defaults";
+
+describe("version des CGV acceptées", () => {
+  it("change quand un réglage cité dans les CGV change, pas sinon", () => {
+    const a = cgvVersion(D, false);
+    expect(a).toMatch(/^2026-11-21-[0-9a-f]{8}$/);
+    expect(cgvVersion(structuredClone(D), false)).toBe(a);
+    expect(cgvVersion({ ...D, discountPercent: 10 }, false)).not.toBe(a);
+    expect(cgvVersion(D, true)).not.toBe(a);
+    expect(cgvVersion({ ...D, bannerText: "Congés" }, false)).toBe(a); // le bandeau n'est pas dans les CGV
+  });
+});

@@ -61,7 +61,12 @@ export default async function SettingsAdmin() {
             ) : <p className="okmsg" style={{ marginBottom: 10 }}>Tout est renseigné.</p>}
             <p className="small muted" style={{ margin: "10px 0" }}>Ces informations alimentent les mentions légales, les CGV et la politique de confidentialité. Tant qu&apos;un champ est vide, la phrase correspondante n&apos;est pas affichée aux visiteurs.</p>
             <SettingsForm group="legal">
-              {keys.filter((k) => k !== "kbisChecked").map((k) => <F key={k} name={k} label={LEGAL_LABELS[k]} value={String(s.legal[k])} />)}
+              {keys.filter((k) => k !== "kbisChecked" && k !== "warrantyText").map((k) => <F key={k} name={k} label={LEGAL_LABELS[k]} value={String(s.legal[k])} />)}
+              <div className="f">
+                <label htmlFor="s-warrantyText">{LEGAL_LABELS.warrantyText}</label>
+                <textarea className="field" id="s-warrantyText" name="warrantyText" rows={6} defaultValue={s.legal.warrantyText} aria-describedby="s-warrantyText-h" />
+                <span className="small muted" id="s-warrantyText-h">Texte réglementaire : sur <a href="https://www.legifrance.gouv.fr" rel="noopener" target="_blank">Légifrance</a>, cherchez « Code de la consommation, article D. 211-2 » et copiez l&apos;encadré tel quel. Il s&apos;affiche dans les CGV, à l&apos;article 9.</span>
+              </div>
               <label className="check"><input type="checkbox" name="kbisChecked" defaultChecked={s.legal.kbisChecked} /> <span>{LEGAL_LABELS.kbisChecked}</span></label>
             </SettingsForm>
           </div>

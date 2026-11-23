@@ -352,6 +352,7 @@ const SettingsForms = {
     licenceNumber: z.string().trim().max(80), licenceTown: z.string().trim().max(80), hostName: z.string().trim().max(160), hostAddress: z.string().trim().max(300),
     hostPhone: z.string().trim().max(40), mediatorName: z.string().trim().max(160), mediatorAddress: z.string().trim().max(300), mediatorWebsite: z.string().trim().max(200),
     giftCardValidity: z.string().trim().max(80), emailProvider: z.string().trim().max(160), dataLocation: z.string().trim().max(160),
+    warrantyText: z.string().trim().max(6000),
   }),
   payment: z.object({ enabled: z.literal("on").optional() }),
 };

@@ -91,7 +91,7 @@ export function Catalogue({ products, initialFilter }: { products: ProductView[]
             head,
             <article className="prod" key={p.slug}>
               {p.tag && <span className={`tag${p.tag === "BEST_SELLER" ? " best" : ""}`}>{tagText(p.tag)}</span>}
-              <Link className="pic" href={`/vins/${p.slug}`} aria-label={`Voir la fiche : ${p.name}`}><ProductPicture p={p} /></Link>
+              <Link className="pic" href={`/vins/${p.slug}`} tabIndex={-1} aria-hidden="true"><ProductPicture p={p} /></Link>
               <h3><Link className="plink" href={`/vins/${p.slug}`}><Hl t={p.name} q={q} /></Link></h3>
               <div className="meta">
                 <b><Hl t={p.domain} q={q} /></b>

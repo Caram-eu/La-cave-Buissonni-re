@@ -22,13 +22,23 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
    marchés habituels et exceptionnels/annulés, devis, lettre d'information (export CSV pour Brevo),
    cartes cadeaux (création + code + e-mail, déduction au marché), réglages (règles, contacts,
    informations légales → liste « À compléter »).
-5. E-mails et paiement — FAIT (en attente de validation). Expéditeur contact@lacavebuissonniere.fr (choix de Léo).
+5. E-mails et paiement — FAIT, validé. Expéditeur contact@lacavebuissonniere.fr (choix de Léo).
    `src/lib/emails.ts` (modèles), `src/lib/server/mail.ts` (Brevo, journal `EmailLog` sans contenu, 1 nouvelle
    tentative, jamais bloquant), `src/lib/server/notify.ts` (confirmation + alerte, devis, rappels la veille,
    `dailyTasks`), route `/api/taches/quotidiennes` (Bearer CRON_SECRET, à planifier chaque soir après 19 h).
    SumUp codé « comme si » (`src/lib/server/payment.ts`), testé avec un faux service : désactivé tant que
    SUMUP_API_KEY / SUMUP_MERCHANT_CODE ne sont pas installées. Brevo testé avec un faux service (pas de compte).
-6. Pages légales et référencement (+ test Playwright de bout en bout)
+6. Pages légales, référencement, accessibilité — FAIT (en attente de validation).
+   Pages `/mentions-legales`, `/cgv` (formulaire de rétractation), `/confidentialite`, `/cookies` alimentées par
+   les réglages : un champ vide n'est jamais montré aux visiteurs (liste « À compléter » dans l'admin).
+   Encadré officiel de garantie (D. 211-2) : à coller depuis Légifrance dans Réglages (`legal.warrantyText`),
+   NE PAS le rédiger de mémoire. Version des CGV acceptée = date du texte + empreinte des réglages cités
+   (`cgvVersion`, src/lib/legal.ts) : changer `CGV_VERSION` à chaque modification du texte.
+   `sitemap.xml`, `robots.txt` (dynamiques), JSON-LD LiquorStore + Product. Audit axe WCAG 2.1 AA :
+   0 défaut sur 26 pages x 2 tailles (aussi dans les tests e2e). Lighthouse mobile : accessibilité,
+   bonnes pratiques 100 ; SEO 100 (66 voulu sur /compte et /panier, non indexés) ; performance 86-99
+   selon pages et mesures (accueil 86-92). Aperçu vidéo en WebP préchargé, police Cabin Sketch réduite
+   (original dans sources/), logos WebP pour l'en-tête et le pied de page (logo.png gardé pour les e-mails).
 7. Déploiement et LISEZMOI.md
 
 ## Décisions de Léo (22 novembre 2026)

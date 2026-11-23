@@ -2,7 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import { Prisma, type User } from "@prisma/client";
 import { z } from "zod";
-import { CGV_VERSION } from "../legal";
+import { cgvVersion } from "../legal";
 import { checkGiftCard, giftCardAmount, normalizeGiftCode } from "../rules/giftcard";
 import { orderableMarkets, type Occurrence } from "../rules/markets";
 import { parisNow } from "../rules/paris-time";
@@ -201,7 +201,7 @@ export async function placeOrder(
           giftCardCents: giftCents,
           totalCents: cart.totalCents - giftCents,
           paymentMethod: input.payment,
-          cgvVersion: CGV_VERSION,
+          cgvVersion: cgvVersion(s, s.onlinePayment.enabled),
           cgvAcceptedAt: now,
           ...delivery,
           items: {

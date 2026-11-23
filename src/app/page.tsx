@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { preload } from "react-dom";
 import { MarketsSection } from "@/components/markets/MarketsSection";
 import type { TownPin } from "@/components/markets/types";
 import { formatHours, upcomingMarkets, upcomingSpecials } from "@/lib/rules/markets";
@@ -9,6 +10,8 @@ import { getSettings } from "@/lib/server/settings";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  // l'aperçu de la vidéo est le plus grand élément visible au chargement : on le demande en priorité
+  preload("/video/poster.webp", { as: "image", fetchPriority: "high" });
   const [s, { weekly, exceptions }] = await Promise.all([getSettings(), loadMarkets()]);
   const now = new Date();
   const upcoming = upcomingMarkets(now, weekly, exceptions, { days: 70, hideFinished: true });
@@ -69,7 +72,7 @@ export default async function Home() {
           </div>
           <div>
             <div className="player">
-              <video src="/video/presentation.mp4" poster="/video/poster.jpg" controls playsInline preload="none" aria-label="Vidéo de présentation de La Cave Buissonnière, 30 secondes" />
+              <video src="/video/presentation.mp4" poster="/video/poster.webp" controls playsInline preload="none" aria-label="Vidéo de présentation de La Cave Buissonnière, 30 secondes" />
             </div>
           </div>
         </div>

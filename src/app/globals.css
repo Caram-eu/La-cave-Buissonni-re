@@ -57,7 +57,7 @@ header nav a.on{background:var(--slate);color:var(--onSlate)}
 /* hero */
 .hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
 .hero .kick{font-family:"Cabin Sketch",cursive;font-size:clamp(40px,5.4vw,64px);line-height:.95;margin-bottom:14px}
-.hero .kick span{color:var(--green)}
+.hero .kick span{color:#70990f} /* vert de la marque légèrement foncé : contraste 3,4:1 (WCAG AA grand texte) */
 .hero p.lead{font-size:18px;max-width:34em;margin:14px 0 22px}
 .player{position:relative;border-radius:20px;overflow:hidden;background:var(--slate);aspect-ratio:16/9;box-shadow:0 18px 0 -6px var(--green)}
 .player video{display:block;width:100%;height:100%;object-fit:cover}
@@ -344,7 +344,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.18);margin-top:26px;padding
 @media(max-width:760px){.fiche-pic svg,.fiche-pic img{height:230px}}
 
 /* bandeau défilant des prochains marchés */
-.ticker{display:flex;align-items:center;gap:0;background:var(--green);color:#1b2a10;font-size:15px;min-height:40px;position:relative;z-index:21}
+.ticker{display:flex;align-items:center;gap:0;background:var(--green);color:#1b2a10;font-size:15px;min-height:44px;position:relative;z-index:21}
 .tk-label{flex:none;align-self:stretch;display:flex;align-items:center;background:var(--slate);color:var(--onSlate);font-family:Kalam,cursive;font-weight:700;font-size:16px;padding:0 14px 0 max(5vw,16px);clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%);padding-right:24px}
 .tk-viewport{flex:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
 .tk-track{display:flex;width:max-content;animation:tk-scroll linear infinite}
@@ -355,7 +355,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.18);margin-top:26px;padding
 .tk-list a{text-decoration:none;padding:8px 0;display:inline-block}
 .tk-list a:hover{text-decoration:underline}
 .tk-star{font-weight:700;color:#7a1f3d}
-.tk-btn{flex:none;width:44px;height:40px;border:0;background:transparent;color:#1b2a10;cursor:pointer;display:grid;place-items:center;margin-right:max(calc(5vw - 14px),4px)}
+.tk-btn{flex:none;width:44px;height:44px;margin-left:6px;border:0;background:transparent;color:#1b2a10;cursor:pointer;display:grid;place-items:center;margin-right:max(calc(5vw - 14px),4px)}
 .tk-btn svg{width:20px;height:20px}
 @keyframes tk-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:560px){.tk-label{font-size:0;padding-left:12px;padding-right:20px}.tk-label::before{content:"Marchés";font-size:15px}}
@@ -390,7 +390,7 @@ footer .legal{border-top:1px solid rgba(255,255,255,.18);margin-top:26px;padding
 .btn.danger{background:#b3261e;border-color:#b3261e;color:#fff}
 .inline{display:inline}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
-@media(max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}.tbl.resp thead{display:none}.tbl.resp tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}.tbl.resp td{display:block;border:0;padding:2px 0}.tbl.resp td.n{text-align:left}}
+@media(max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}.tbl.resp thead{display:none}.tbl.resp tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}.tbl.resp td{display:block;border:0;padding:2px 0}.tbl.resp td.n{text-align:left}.tbl.resp td:first-child{font-weight:700;padding-top:6px}}
 .todo-list li{margin:4px 0}
 .okmsg{color:#3f5a05;font-weight:700}
 .muted-row{opacity:.55}
