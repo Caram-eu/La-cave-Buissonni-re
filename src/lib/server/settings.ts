@@ -18,3 +18,8 @@ export async function getSettings(): Promise<Settings> {
   }
   return s as Settings;
 }
+
+/** Enregistre un groupe de réglages (déjà validé par l'appelant). */
+export async function saveSetting<K extends keyof Settings>(key: K, value: Settings[K]) {
+  await db.setting.upsert({ where: { key }, create: { key, value: value as object }, update: { value: value as object } });
+}

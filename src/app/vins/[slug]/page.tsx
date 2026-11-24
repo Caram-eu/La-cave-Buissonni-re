@@ -106,7 +106,7 @@ export default async function FichePage({ params }: Props) {
               <div className="grid">
                 {same.map(toView).map((x) => (
                   <article className="prod" key={x.slug}>
-                    <Link className="pic" href={`/vins/${x.slug}`} aria-label={`Voir la fiche : ${x.name}`}><ProductPicture p={x} /></Link>
+                    <Link className="pic" href={`/vins/${x.slug}`} tabIndex={-1} aria-hidden="true"><ProductPicture p={x} /></Link>
                     <h3><Link className="plink" href={`/vins/${x.slug}`}>{x.name}</Link></h3>
                     <div className="meta">{x.appellation}{x.vintage && " · " + vintageText(x.vintage)}{volumeText(x) && " · " + volumeText(x)}</div>
                     <div className="buy"><span className="price">{formatEuros(x.priceCents)}</span><Link className="btn ghost" href={`/vins/${x.slug}`}>Voir</Link></div>

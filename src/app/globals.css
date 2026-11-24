@@ -57,7 +57,7 @@ header nav a.on{background:var(--slate);color:var(--onSlate)}
 /* hero */
 .hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
 .hero .kick{font-family:"Cabin Sketch",cursive;font-size:clamp(40px,5.4vw,64px);line-height:.95;margin-bottom:14px}
-.hero .kick span{color:var(--green)}
+.hero .kick span{color:#70990f} /* vert de la marque légèrement foncé : contraste 3,4:1 (WCAG AA grand texte) */
 .hero p.lead{font-size:18px;max-width:34em;margin:14px 0 22px}
 .player{position:relative;border-radius:20px;overflow:hidden;background:var(--slate);aspect-ratio:16/9;box-shadow:0 18px 0 -6px var(--green)}
 .player video{display:block;width:100%;height:100%;object-fit:cover}
@@ -342,3 +342,63 @@ footer .legal{border-top:1px solid rgba(255,255,255,.18);margin-top:26px;padding
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* la maquette déclarait la taille mobile avant la taille ordinateur : on la rétablit ici */
 @media(max-width:760px){.fiche-pic svg,.fiche-pic img{height:230px}}
+
+/* bandeau défilant des prochains marchés */
+.ticker{display:flex;align-items:center;gap:0;background:var(--green);color:#1b2a10;font-size:15px;min-height:44px;position:relative;z-index:21}
+.tk-label{flex:none;align-self:stretch;display:flex;align-items:center;background:var(--slate);color:var(--onSlate);font-family:Kalam,cursive;font-weight:700;font-size:16px;padding:0 14px 0 max(5vw,16px);clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%);padding-right:24px}
+.tk-viewport{flex:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.tk-track{display:flex;width:max-content;animation:tk-scroll linear infinite}
+.ticker:hover .tk-track,.ticker:focus-within .tk-track,.ticker.paused .tk-track{animation-play-state:paused}
+.tk-list{display:flex;list-style:none;margin:0;padding:0}
+.tk-list li{white-space:nowrap;display:flex;align-items:center}
+.tk-list li::after{content:"";width:7px;height:7px;border-radius:50%;background:#1b2a10;opacity:.55;margin:0 22px}
+.tk-list a{text-decoration:none;padding:8px 0;display:inline-block}
+.tk-list a:hover{text-decoration:underline}
+.tk-star{font-weight:700;color:#7a1f3d}
+.tk-btn{flex:none;width:44px;height:44px;margin-left:6px;border:0;background:transparent;color:#1b2a10;cursor:pointer;display:grid;place-items:center;margin-right:max(calc(5vw - 14px),4px)}
+.tk-btn svg{width:20px;height:20px}
+@keyframes tk-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:560px){.tk-label{font-size:0;padding-left:12px;padding-right:20px}.tk-label::before{content:"Marchés";font-size:15px}}
+/* animations réduites : pas de défilement automatique, on fait glisser à la main */
+@media(prefers-reduced-motion:reduce){.tk-viewport{overflow-x:auto;mask-image:none}.tk-track{animation:none}.tk-track>.tk-list[aria-hidden]{display:none}.tk-btn{display:none}}
+
+/* ---------- administration (utilisable sur téléphone) ---------- */
+.adm{max-width:1100px;margin:0 auto;padding:16px max(4vw,12px) 48px}
+.adm h1{font-size:clamp(28px,4vw,38px);margin:4px 0 14px}
+.adm h2{font-size:24px;margin:0 0 10px}
+.admnav{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;margin-bottom:8px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.admnav a{flex:none;text-decoration:none;font-weight:700;font-size:15px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);min-height:40px;display:flex;align-items:center;gap:6px}
+.admnav a.on{background:var(--slate);border-color:var(--slate);color:var(--onSlate)}
+.admnav .cnt{background:var(--wine);color:#fff;border-radius:999px;font-size:12px;padding:0 7px;min-width:20px;text-align:center}
+.cards{display:grid;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.card a.stretch{text-decoration:none}
+.card .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.st{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--soft)}
+.st.NOUVELLE{background:#7a1f3d;color:#fff}.st.CONFIRMEE{background:#e3efc6;color:#3f5a05}.st.PREPAREE{background:#fff1b8;color:#5c4400}.st.REMISE{background:#2d3e46;color:#fff}.st.ANNULEE{background:#eee;color:#666;text-decoration:line-through}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.filters .f{margin:0}
+.filters label{font-size:13px;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin-bottom:18px}
+.kpis a{display:block;text-decoration:none;background:var(--soft);border-radius:16px;padding:14px 16px}
+.kpis b{display:block;font-family:Kalam;font-size:36px;line-height:1;color:var(--greenInk)}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th{text-align:left;font-size:13px;color:var(--mute);border-bottom:2px solid var(--line);padding:6px 8px 6px 0}
+.tbl td{border-bottom:1px solid var(--line);padding:8px 8px 8px 0;vertical-align:top}
+.tbl td.n{text-align:right;white-space:nowrap;font-weight:700}
+.btn.sm{min-height:38px;padding:4px 14px;font-size:14px}
+.btn.danger{background:#b3261e;border-color:#b3261e;color:#fff}
+.inline{display:inline}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media(max-width:640px){.grid2{grid-template-columns:minmax(0,1fr)}.tbl.resp thead{display:none}.tbl.resp tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}.tbl.resp td{display:block;border:0;padding:2px 0}.tbl.resp td.n{text-align:left}.tbl.resp td:first-child{font-weight:700;padding-top:6px}}
+.todo-list li{margin:4px 0}
+.okmsg{color:#3f5a05;font-weight:700}
+.muted-row{opacity:.55}
+.thumb{width:44px;height:60px;display:grid;place-items:center;background:var(--soft);border-radius:8px;flex:none}
+.thumb svg,.thumb img{max-height:54px;width:auto}
+/* fiche de préparation imprimable */
+@media print{
+  header,footer,.ticker,.backbar,.admnav,.noprint,.ck,#toast{display:none!important}
+  body{font-size:12pt}.adm{padding:0;max-width:none}.card{border:1px solid #999;break-inside:avoid}
+  .tbl td,.tbl th{padding:4px 6px 4px 0}
+}

@@ -117,3 +117,181 @@ model RateLimit {
   count     Int
   resetAt   DateTime
 }
+
+// ---------- Comptes ----------
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  phone         String?
+  habitualTown  String?   // marché habituel (null = « Aucun »)
+  newsletter    Boolean   @default(false)
+  adultCertifiedAt DateTime // date de l'attestation « 18 ans ou plus »
+  isAdmin       Boolean   @default(false)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  sessions      Session[]
+  orders        Order[]
+  resets        PasswordReset[]
+}
+
+model Session {
+  id        String   @id // empreinte SHA-256 du jeton du cookie (le jeton lui-même n'est jamais stocké)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ---------- Commandes ----------
+
+enum OrderStatus {
+  NOUVELLE
+  CONFIRMEE
+  PREPAREE
+  REMISE
+  ANNULEE
+}
+
+enum DeliveryMode {
+  MARCHE
+  LIVRAISON
+  EXPEDITION
+}
+
+enum PaymentMethod {
+  A_LA_REMISE // espèces ou carte au retrait / à la livraison
+  EN_LIGNE    // prévu, désactivé par défaut
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  number         String        @unique
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status         OrderStatus   @default(NOUVELLE)
+  mode           DeliveryMode
+  // copie des coordonnées au moment de la commande (conservées même si le compte est supprimé)
+  customerName   String
+  customerEmail  String
+  phone          String
+  // retrait sur un marché
+  marketDate     String?       // AAAA-MM-JJ
+  marketTown     String?
+  marketPlace    String?
+  marketHours    String?
+  // livraison ou expédition
+  address        String?
+  city           String?
+  distanceKm     Int?
+  zoneSource     String?       // ign, liste
+  note           String        @default("")
+  grossCents     Int
+  discountCents  Int
+  giftCardCents  Int           @default(0)
+  totalCents     Int           // reste à payer, hors frais de livraison ou d'expédition
+  shippingNote   String?       // frais convenus par téléphone
+  adminNote      String?       // note interne de Guillaume
+  paymentMethod  PaymentMethod @default(A_LA_REMISE)
+  paymentStatus  String        @default("a_payer") // a_payer, en_attente (paiement en ligne commencé), paye, rembourse
+  paymentRef     String?       // identifiant du paiement chez SumUp
+  cgvVersion     String
+  cgvAcceptedAt  DateTime
+  reminderSentAt DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  items          OrderItem[]
+  giftCardUses   GiftCardUse[]
+
+  @@index([marketDate])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id               String  @id @default(cuid())
+  orderId          String
+  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String?
+  slug             String
+  name             String
+  domain           String
+  vintage          String
+  volumeCl         Int
+  unitCents        Int
+  qty              Int
+  discountEligible Boolean
+  lineTotalCents   Int
+}
+
+// ---------- Cartes cadeaux (vendues sur les marchés, utilisables en ligne) ----------
+
+model GiftCard {
+  id            String        @id @default(cuid())
+  code          String        @unique
+  initialCents  Int
+  balanceCents  Int           // solde disponible (hors montants réservés par des commandes en cours)
+  buyerName     String?
+  recipientEmail String?
+  expiresAt     DateTime?
+  disabled      Boolean       @default(false)
+  note          String?
+  createdAt     DateTime      @default(now())
+  uses          GiftCardUse[]
+}
+
+enum GiftCardUseStatus {
+  RESERVE  // bloqué à la commande
+  DEBITE   // commande remise
+  LIBERE   // commande annulée : montant rendu à la carte
+}
+
+model GiftCardUse {
+  id         String            @id @default(cuid())
+  giftCardId String
+  giftCard   GiftCard          @relation(fields: [giftCardId], references: [id])
+  orderId    String
+  order      Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amountCents Int
+  status     GiftCardUseStatus @default(RESERVE)
+  createdAt  DateTime          @default(now())
+}
+
+// Demande de réinitialisation du mot de passe (lien valable 1 heure, utilisable une fois)
+model PasswordReset {
+  id        String    @id // empreinte SHA-256 du jeton envoyé par e-mail
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// Photo de bouteille envoyée depuis l'administration (servie par /photos/[id])
+model ProductPhoto {
+  id        String   @id @default(cuid())
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+}
+
+// Journal des e-mails envoyés (sans leur contenu), conservé 12 mois
+model EmailLog {
+  id         String   @id @default(cuid())
+  kind       String   // confirmation, alerte-commande, rappel, carte-cadeau, mot-de-passe, alerte-devis
+  to         String
+  subject    String
+  status     String   // envoye, echec, dossier-local
+  error      String?
+  providerId String?
+  orderId    String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}

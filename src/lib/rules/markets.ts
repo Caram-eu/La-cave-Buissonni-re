@@ -39,6 +39,13 @@ export function startMinutes(hours: string): number {
   return m ? Number(m[1]) * 60 + Number(m[2] || 0) : 0;
 }
 
+/** Heure de fin en minutes ("8h-12h30" -> 750). Sans heure de fin : fin de journée. */
+export function endMinutes(hours: string): number {
+  const end = hours.split("-")[1];
+  const m = end ? /(\d{1,2})\s*h\s*(\d{2})?/.exec(end) : null;
+  return m ? Number(m[1]) * 60 + Number(m[2] || 0) : 24 * 60;
+}
+
 /** "8h-12h30" -> "8 h – 12 h 30" */
 export function formatHours(hours: string): string {
   return hours
@@ -56,10 +63,10 @@ export function upcomingMarkets(
   now: Date,
   markets: WeeklyMarket[],
   exceptions: MarketExceptionInput[],
-  opts: { days?: number; town?: string; limit?: number } = {},
+  opts: { days?: number; town?: string; limit?: number; hideFinished?: boolean } = {},
 ): Occurrence[] {
-  const { days = 70, town, limit } = opts;
-  const today = parisNow(now).date;
+  const { days = 70, town, limit, hideFinished } = opts;
+  const { date: today, minutes } = parisNow(now);
   const last = addDays(today, days - 1);
   const cancelled = new Set(
     exceptions.filter((e) => e.kind === "ANNULE" && e.marketId).map((e) => `${e.marketId}:${e.date}`),
@@ -88,7 +95,9 @@ export function upcomingMarkets(
     });
   }
   out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : startMinutes(a.hours) - startMinutes(b.hours)));
-  return limit ? out.slice(0, limit) : out;
+  // option : retirer les marchés d'aujourd'hui déjà terminés
+  const list = hideFinished ? out.filter((o) => o.date !== today || endMinutes(o.hours) > minutes) : out;
+  return limit ? list.slice(0, limit) : list;
 }
 
 /** Marchés exceptionnels encore à venir (pour l'encadré « Marchés de Noël et des fêtes »). */

@@ -15,9 +15,10 @@ export function distanceKm(a: LonLat, b: LonLat): number {
 
 export type ZoneResult =
   | { status: "ok" | "hors-zone"; km: number; name: string; department?: string }
-  | { status: "inconnue" };
+  | { status: "inconnue" }
+  | { status: "ambigu"; candidates: string[] }; // plusieurs communes du même nom
 
-export function zoneFromCoords(point: LonLat, base: LonLat, radiusKm: number, name: string): ZoneResult {
+export function zoneFromCoords(point: LonLat, base: LonLat, radiusKm: number, name: string): { status: "ok" | "hors-zone"; km: number; name: string } {
   const km = Math.round(distanceKm(point, base));
   return { status: km <= radiusKm ? "ok" : "hors-zone", km, name };
 }

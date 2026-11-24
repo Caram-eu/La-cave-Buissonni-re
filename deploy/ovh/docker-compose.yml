@@ -1,0 +1,52 @@
+# Option B : serveur privé (VPS OVH) avec Docker.
+# Lancer depuis ce dossier : docker compose up -d --build
+# Fichier de réglages : deploy/ovh/.env (copie de .env.exemple, jamais publié).
+
+services:
+  base:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cave
+      POSTGRES_USER: cave
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Indiquez POSTGRES_PASSWORD dans deploy/ovh/.env}
+    volumes:
+      - donnees-base:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cave -d cave"]
+      interval: 10s
+      retries: 10
+
+  site:
+    build: { context: ../.., target: site }
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://cave:${POSTGRES_PASSWORD}@base:5432/cave
+    depends_on:
+      base: { condition: service_healthy }
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAINE: ${DOMAINE:?Indiquez DOMAINE dans deploy/ovh/.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - certificats:/data
+    depends_on: [site]
+
+  # Outils ponctuels, ex. : docker compose run --rm outils npm run admin -- ajouter adresse@exemple.fr
+  outils:
+    build: { context: ../.., target: outils }
+    profiles: ["outils"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://cave:${POSTGRES_PASSWORD}@base:5432/cave
+    depends_on:
+      base: { condition: service_healthy }
+
+volumes:
+  donnees-base:
+  certificats:

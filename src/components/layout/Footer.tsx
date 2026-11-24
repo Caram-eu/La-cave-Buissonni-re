@@ -9,7 +9,7 @@ export function Footer({ contact }: { contact: Settings["contact"] }) {
           <div className="cols">
             <div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="La Cave Buissonnière" width={180} height={124} style={{ width: 180, height: "auto", background: "#fff", borderRadius: 10, padding: 6 }} loading="lazy" />
+              <img src="/logo-360.webp" alt="La Cave Buissonnière" width={180} height={124} style={{ width: 180, height: "auto", background: "#fff", borderRadius: 10, padding: 6 }} loading="lazy" />
             </div>
             <div>
               <h2 style={{ fontSize: 24, marginBottom: 8 }}>Contact</h2>

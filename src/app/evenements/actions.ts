@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { db } from "@/lib/server/db";
+import { notifyQuote } from "@/lib/server/notify";
 import { clientIp, rateLimit } from "@/lib/server/rate-limit";
 import { QUOTE_TYPES } from "@/lib/quote-types";
 
@@ -30,9 +31,9 @@ export async function sendQuote(_: { ok: boolean; error?: string }, form: FormDa
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message || "Vérifiez le formulaire." };
   const d = parsed.data;
   if (!(await rateLimit(`devis:${await clientIp()}`, 5, 3600))) return { ok: false, error: "Trop de demandes envoyées. Réessayez dans une heure ou appelez-nous." };
-  await db.quote.create({
+  const q = await db.quote.create({
     data: { type: d.type, date: d.date, guests: d.guests, place: d.place, budget: d.budget, message: d.message, name: d.name, phone: d.phone, email: d.email },
   });
-  // L'e-mail à Guillaume sera branché à l'étape « E-mails ».
+  await notifyQuote(q);
   return { ok: true };
 }

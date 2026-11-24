@@ -42,7 +42,9 @@ export function BackBar() {
     const id = setTimeout(() => {
       const label = FIXED[path] ?? document.title.split(" | ")[0];
       const t = read();
-      if (t[t.length - 1]?.path !== path) t.push({ path, label });
+      // aller-retour A -> B -> A (ex. panier -> compte -> panier) : on oublie le détour par B
+      if (t.length >= 2 && t[t.length - 2].path === path) t.pop();
+      else if (t[t.length - 1]?.path !== path) t.push({ path, label });
       write(t);
       const p = t.length > 1 ? t[t.length - 2] : path === "/" ? null : path.startsWith("/vins/") ? { path: "/vins", label: "Nos vins" } : { path: "/", label: "La cave" };
       setPrev(p);
