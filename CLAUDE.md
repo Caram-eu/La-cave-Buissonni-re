@@ -71,6 +71,9 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
 - Administration : Guillaume et Léo (23 nov. 2026). Limite d'inscriptions : 20 par heure et par IP
   (IP souvent partagées : opérateurs mobiles, Wi-Fi de salle des fêtes).
 - Les évolutions futures passeront par Léo, via des sessions Claude : tout doit rester dans ce dépôt.
+- Branches (24 nov. 2026) : `main` créée au niveau de l'étape 1 à la demande de Léo ; les étapes 2 à 7 arrivent
+  par la demande de fusion n° 1 (que Léo valide lui-même). Vercel mettra en ligne `main`. Évolutions futures :
+  une branche de travail + une demande de fusion vers `main`, jamais d'envoi direct sur `main`.
 
 ## Technique
 - Next.js 15 (App Router, TypeScript 5 : TypeScript 7 n'est pas compatible avec Next 15), Prisma 6 + PostgreSQL, Zod 4, Vitest.
