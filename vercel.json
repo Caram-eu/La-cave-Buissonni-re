@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["cdg1"],
+  "buildCommand": "bash scripts/vercel-build.sh",
+  "crons": [
+    { "path": "/api/taches/quotidiennes", "schedule": "10 18 * * *" }
+  ]
+}

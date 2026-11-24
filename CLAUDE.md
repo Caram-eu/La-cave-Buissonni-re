@@ -28,7 +28,7 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
    `dailyTasks`), route `/api/taches/quotidiennes` (Bearer CRON_SECRET, à planifier chaque soir après 19 h).
    SumUp codé « comme si » (`src/lib/server/payment.ts`), testé avec un faux service : désactivé tant que
    SUMUP_API_KEY / SUMUP_MERCHANT_CODE ne sont pas installées. Brevo testé avec un faux service (pas de compte).
-6. Pages légales, référencement, accessibilité — FAIT (en attente de validation).
+6. Pages légales, référencement, accessibilité — FAIT, validé.
    Pages `/mentions-legales`, `/cgv` (formulaire de rétractation), `/confidentialite`, `/cookies` alimentées par
    les réglages : un champ vide n'est jamais montré aux visiteurs (liste « À compléter » dans l'admin).
    Encadré officiel de garantie (D. 211-2) : à coller depuis Légifrance dans Réglages (`legal.warrantyText`),
@@ -39,7 +39,15 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
    bonnes pratiques 100 ; SEO 100 (66 voulu sur /compte et /panier, non indexés) ; performance 86-99
    selon pages et mesures (accueil 86-92). Aperçu vidéo en WebP préchargé, police Cabin Sketch réduite
    (original dans sources/), logos WebP pour l'en-tête et le pied de page (logo.png gardé pour les e-mails).
-7. Déploiement et LISEZMOI.md
+7. Déploiement et documentation — FAIT (en attente de validation). Rien n'est en ligne : hébergeur et domaine
+   pas encore choisis. `LISEZMOI.md` (mode d'emploi non-développeur), `VERIFICATION.md` (liste avant mise en ligne).
+   Option A : `vercel.json` (région cdg1, cron 18:10 UTC = 19 h 10 / 20 h 10 Paris), `scripts/vercel-build.sh`
+   (migrations avec DIRECT_URL, Neon pooler + `pgbouncer=true` pour DATABASE_URL).
+   Option B : `Dockerfile` (étages deps, outils, migrations, site ; image testée en conteneur : migrations au
+   démarrage, santé, utilisateur non root), `deploy/ovh/` (compose site + PostgreSQL + Caddy HTTPS, profil
+   `outils` pour seed/admin, sauvegarde/restauration testées, tâche du soir, crontab). `/api/sante`.
+   CI GitHub Actions `.github/workflows/tests.yml`. Limite des actions serveur : 4 Mo (photos 3 Mo, réduites
+   dans le navigateur à 1 600 px ; cartes 3 Mo) — sous le plafond de 4,5 Mo de Vercel.
 
 ## Décisions de Léo (22 novembre 2026)
 - Domaine lacavebuissonniere.fr : décision reportée.
@@ -93,3 +101,5 @@ la maquette validée dans `sources/maquette/index.html` (référence pour le des
   par un assistant : ne pas contourner, utiliser `migrate deploy`.
 - `npx prisma migrate dev` puis `npm run db:seed` : base locale et chargement des données
 - `npm run db:seed -- --marches` : remplace aussi les marchés par ceux de `donnees/marches.json`
+- Docker dans l'environnement cloud de Claude : `dockerd` démarre, mais apt (deb.debian.org) est bloqué par le proxy ;
+  tester avec une variante du Dockerfile basée sur `node:22-bookworm` (complète) et le certificat du proxy.

@@ -10,3 +10,5 @@ next-env.d.ts
 .env.local
 .env.*.local
 /public/uploads/
+deploy/ovh/.env
+deploy/ovh/sauvegardes/

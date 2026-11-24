@@ -1,8 +1,24 @@
+import { randomBytes } from "node:crypto";
+import { deflateSync, crc32 } from "node:zlib";
 import { PrismaClient } from "@prisma/client";
 import { expect, test, type Page } from "@playwright/test";
 
 const db = new PrismaClient({ datasources: { db: { url: process.env.TEST_DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/cave_test" } } });
 test.afterAll(() => db.$disconnect());
+
+/** Image PNG de bruit aléatoire (environ 4 Mo, peu compressible), comme une grosse photo de téléphone. */
+function bigPng(w = 1150, h = 1150): Buffer {
+  const chunk = (type: string, data: Buffer) => {
+    const len = Buffer.alloc(4); len.writeUInt32BE(data.length);
+    const td = Buffer.concat([Buffer.from(type), data]);
+    const crc = Buffer.alloc(4); crc.writeUInt32BE(crc32(td) >>> 0);
+    return Buffer.concat([len, td, crc]);
+  };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 2;
+  const raw = Buffer.alloc((w * 3 + 1) * h);
+  for (let y = 0; y < h; y++) randomBytes(w * 3).copy(raw, y * (w * 3 + 1) + 1);
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw)), chunk("IEND", Buffer.alloc(0))]);
+}
 
 async function signup(page: Page, email: string, first: string) {
   await page.goto("/compte");
@@ -72,6 +88,19 @@ test("administration : accès réservé, produits, marchés, cartes cadeaux, com
   await client.goto("/vins/domaine-des-maels-montesclat-2023");
   await expect(client.getByText("Indisponible pour le moment")).toBeVisible();
   await page.getByRole("button", { name: /Montesclat : indisponible/ }).click();
+
+  // 5 bis. Photo prise au téléphone (plus de 1 Mo) : réduite dans le navigateur puis enregistrée
+  const png = bigPng();
+  expect(png.length).toBeGreaterThan(3 * 1024 * 1024);
+  await page.goto("/admin/produits?q=montesclat");
+  await page.locator(".card a", { hasText: "Montesclat" }).first().click();
+  await page.setInputFiles("#ph", { name: "photo.png", mimeType: "image/png", buffer: png });
+  await page.getByRole("button", { name: "Envoyer la photo" }).click();
+  await expect(page.getByText("Photo enregistrée.")).toBeVisible({ timeout: 15000 });
+  const photo = (await db.product.findUniqueOrThrow({ where: { slug: "domaine-des-maels-montesclat-2023" } })).photoUrl!;
+  const img = await page.request.get(photo);
+  expect(img.headers()["content-type"]).toBe("image/jpeg");
+  await db.product.update({ where: { slug: "domaine-des-maels-montesclat-2023" }, data: { photoUrl: null } });
 
   // 6. Marché exceptionnel : il apparaît sur le site
   await page.goto("/admin/marches");

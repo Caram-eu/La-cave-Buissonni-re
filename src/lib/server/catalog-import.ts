@@ -5,11 +5,11 @@ import { mapCatalog, type ImportedProduct, type ImportResult } from "../rules/ca
 import { NO_DISCOUNT_CATEGORIES } from "../settings-defaults";
 import { db } from "./db";
 
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_BYTES = 3 * 1024 * 1024;
 
 /** Lit un fichier CSV ou Excel (.xlsx, première feuille) et le transforme en lignes de texte. */
 export async function readSpreadsheet(file: File): Promise<string[][]> {
-  if (file.size > MAX_BYTES) throw new Error("Fichier trop gros (5 Mo maximum).");
+  if (file.size > MAX_BYTES) throw new Error("Fichier trop gros (3 Mo maximum).");
   const buf = Buffer.from(await file.arrayBuffer());
   if (/\.xlsx$/i.test(file.name) || buf.subarray(0, 2).toString() === "PK") {
     const wb = new ExcelJS.Workbook();

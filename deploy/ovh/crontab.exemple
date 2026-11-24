@@ -1,0 +1,6 @@
+# Tâches planifiées du serveur (commande : crontab -e).
+# Le serveur doit être à l'heure de Paris : sudo timedatectl set-timezone Europe/Paris
+# 19 h 10 : rappels de la veille (après l'heure limite de 19 h) et nettoyage RGPD
+10 19 * * * /opt/cave/deploy/ovh/tache-du-soir.sh >> /opt/cave/deploy/ovh/sauvegardes/journal.txt 2>&1
+# 3 h 30 : sauvegarde de la base
+30 3 * * * /opt/cave/deploy/ovh/sauvegarde.sh >> /opt/cave/deploy/ovh/sauvegardes/journal.txt 2>&1

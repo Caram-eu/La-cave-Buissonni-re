@@ -8,8 +8,11 @@ export function ImportForm() {
   const [file, setFile] = useState<File | null>(null);
   const [hide, setHide] = useState(true);
   const ref = useRef<HTMLInputElement>(null);
+  const [tooBig, setTooBig] = useState("");
   const send = (confirm: boolean) => {
     if (!file) return;
+    if (file.size > 3 * 1024 * 1024) return setTooBig("Fichier trop gros (3 Mo maximum). Une carte de quelques centaines de lignes pèse moins de 100 Ko : vérifiez que c'est le bon fichier.");
+    setTooBig("");
     const fd = new FormData();
     fd.set("file", file);
     if (confirm) fd.set("confirm", "1");
@@ -23,7 +26,7 @@ export function ImportForm() {
       <div className="f"><label htmlFor="imp">Fichier de la carte (CSV ou Excel .xlsx)</label>
         <input ref={ref} className="field" id="imp" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></div>
       <button className="btn sm" type="button" disabled={!file || pending} onClick={() => send(false)}>{pending && !preview ? "Lecture…" : "Vérifier le fichier"}</button>
-      <p className="err" role="alert" style={{ marginTop: 8 }}>{st.error}</p>
+      <p className="err" role="alert" style={{ marginTop: 8 }}>{tooBig || st.error}</p>
       {st.errors && st.errors.length > 0 && (
         <div className="card" style={{ marginTop: 10, borderColor: "#b3261e" }}>
           <h2>Lignes à corriger ({st.errors.length})</h2>
